@@ -58,9 +58,9 @@ std::string Input;
 
 
 		std::cout << "Stats of Launch"; // shars the stats of the launch
-		std::cout << "\n\nRockets Launched by MC : " << MissContLC << "\n\n"; // main base launched
-		std::cout << "\n\nRockets Launched by SS : " << m_TotalRocketsLaunchedFromMars - MissContLC << "\n\n"; // Sub Station Launches
-		std::cout << "\n\nTotal Launches from Base : " << m_TotalRocketsLaunchedFromMars << std::endl; // Total Rockets Launched
+		std::cout << "\nRockets Launched by MC : " << MissContLC; // main base launched
+		std::cout << "\nRockets Launched by SS : " << m_TotalRocketsLaunchedFromMars - MissContLC; // Sub Station Launches
+		std::cout << "\nTotal Launches from Base : " << m_TotalRocketsLaunchedFromMars << std::endl; // Total Rockets Launched
 		std::cout << "\n\n\n"; // Newlines for neatness
 		std::cout << "Ready to Exit Simulation!\n\n";
 		system("pause");
@@ -73,9 +73,9 @@ std::string Input;
 
 
 	std::cout << "Stats of Launch"; // shars the stats of the launch
-	std::cout << "\n\nRockets Launched by MC : " << MissContLC << "\n\n"; // main base launched
-	std::cout << "\n\nRockets Launched by SS : " << m_TotalRocketsLaunchedFromMars - MissContLC << "\n\n"; // Sub Station Launches
-	std::cout << "\n\nTotal Launches from Base : " << m_TotalRocketsLaunchedFromMars << std::endl; // Total Rockets Launched
+	std::cout << "\nRockets Launched by MC : " << MissContLC; // main base launched
+	std::cout << "\nRockets Launched by SS : " << m_TotalRocketsLaunchedFromMars - MissContLC; // Sub Station Launches
+	std::cout << "\nTotal Launches from Base : " << m_TotalRocketsLaunchedFromMars << std::endl; // Total Rockets Launched
 	std::cout << "\n\n\n"; // few newlines for neatness
 	std::cout << "Ready to Exit Simulation!";
 	system("pause");
@@ -98,9 +98,11 @@ void RocketsLaunchedFromSubStationMars()
 	
 		while (m_abortLaunchSwitch != true) // While returning False, Continues running
 		{
-			std::cout << "\n\n\n Gale Crater Sub Station Launches : " << ++RocketControlSSLC << std::endl;
+			std::cout << "####################" << std::endl;
+			std::cout << "Gale Crater Sub Station Launches : " << ++RocketControlSSLC << std::endl;
 			// The rocket base is the MCLF and the LPF
-			std::cout << "\n\n\n Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars << std::endl;
+			std::cout << "Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars << std::endl;
+			std::cout << "####################" << std::endl;
 			std::this_thread::sleep_for(3s); // Sleeps the thread for 3 seconds
 			if (m_TotalRocketsLaunchedFromMars == 10) { m_abortLaunchSwitch = true; } // After Ten launches, it will automatacally end the While loop
 		}
