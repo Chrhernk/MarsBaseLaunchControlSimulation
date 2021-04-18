@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <string>
+#include<mutex>
 // Includes Above
 
 // Prototypes
@@ -12,6 +13,7 @@ void RocketsLaunchedFromSubStationMars();
 // Global Variables
 int m_TotalRocketsLaunchedFromMars = 0; // Keeps track of our Toal Rockets
 static bool m_abortLaunchSwitch = false; // Our Abort Switch
+std::mutex Locker; // allows for the locking and unlocking of our thread code.
 
 int main()
 {
@@ -34,12 +36,15 @@ std::string Input;
 
 	system("pause"); // Pauses the Simulation
 
-	std::cout << "\n Gale Crater Main Base Launches : " << ++MissContLC << "\n"; // Adds one to the Mission Control Launch Count
-	std::cout << "\n Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars<< "\n"; // Adds to the Total Launches
+	while (MissContLC < 5)
+	{
+		std::cout << "\n Gale Crater Main Base Launches : " << ++MissContLC << "\n"; // Adds one to the Mission Control Launch Count
+		std::cout << "\n Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars << "\n"; // Adds to the Total Launches
+		Sleep(3000); // Freezes the Program for 3 Seconds
+	}
+	
 
-	Sleep(3000); // Freezes the Program for 3 Seconds
-
-	std::cout << "\n Mission Control has launched the first rocket from Gale Crater \n"; // Time to transfer to the Thread
+	std::cout << "\n Mission Control has launched the first five rockets from Gale Crater \n"; // Time to transfer to the Thread
 	std::cout << "\n Time to turn over lauch control to our Space Cadet at our SubStation!\n\n ";
 
 	system("pause"); // Pauses the Simulation
@@ -56,7 +61,7 @@ std::string Input;
 
 		RocketControlSubStationThread.join(); // zips the threads back together
 
-
+		
 		std::cout << "Stats of Launch"; // shars the stats of the launch
 		std::cout << "\nRockets Launched by MC : " << MissContLC; // main base launched
 		std::cout << "\nRockets Launched by SS : " << m_TotalRocketsLaunchedFromMars - MissContLC; // Sub Station Launches
@@ -98,13 +103,27 @@ void RocketsLaunchedFromSubStationMars()
 	
 		while (m_abortLaunchSwitch != true) // While returning False, Continues running
 		{
-			std::cout << "####################" << std::endl;
-			std::cout << "Gale Crater Sub Station Launches : " << ++RocketControlSSLC << std::endl;
-			// The rocket base is the MCLF and the LPF
-			std::cout << "Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars << std::endl;
-			std::cout << "####################" << std::endl;
-			std::this_thread::sleep_for(3s); // Sleeps the thread for 3 seconds
-			if (m_TotalRocketsLaunchedFromMars == 10) { m_abortLaunchSwitch = true; } // After Ten launches, it will automatacally end the While loop
+			int J; // int for our input
+			Locker.lock(); // this locks the current thread from continuing until  it hits the UNLOCK 
+			std::cout << "\n\n ### LAUNCH THREAD HAS BEEN LOCKED, PLEASE ENTER 0 TO CONTINUE THREAD, OR 1 TO STOP LAUNCHES ### \n\n" << std::endl;
+			std::cin >> J;
+			switch (J) { // a switch case for choosing what happens
+
+			case(0):
+				std::cout << "####################" << std::endl;
+				std::cout << "Gale Crater Sub Station Launches : " << ++RocketControlSSLC << std::endl;
+				// The rocket base is the MCLF and the LPF
+				std::cout << "Gale Crater Total Launches : " << ++m_TotalRocketsLaunchedFromMars << std::endl;
+				std::cout << "####################" << std::endl;
+				std::this_thread::sleep_for(3s); // Sleeps the thread for 3 seconds
+				if (m_TotalRocketsLaunchedFromMars == 10) { m_abortLaunchSwitch = true; } // After Ten launches, it will automatacally end the While loop
+				Locker.unlock(); // unlocks the thread, allowing it to move forward farther
+				break;
+
+			case(1): // it can be aborted by the Launcher, seperate from the [Exit] function
+				m_abortLaunchSwitch = true;
+				break;
+			}
 		}
 		std::cout << "All rockets have been launched :: Please Hit Enter to Continue\n\n"; // Once you hit enter, It will return to the rest of the simulation.
 }
